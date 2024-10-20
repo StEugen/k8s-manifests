@@ -1,0 +1,110 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webtop
+  labels:
+    app: webtop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webtop
+  template:
+    metadata:
+      labels:
+        app: webtop
+    spec:
+      containers:
+        - name: webtop
+          image: lscr.io/linuxserver/webtop:ubuntu-xfce
+          ports:
+            - containerPort: 3000
+            - containerPort: 3001
+          env:
+            - name: TZ
+              value: "Etc/UTC"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: webtop-config-pvc
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: dri-device
+          hostPath:
+            path: /dev/dri
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webtop
+  labels:
+    app: webtop
+spec:
+  selector:
+    app: webtop
+  ports:
+    - name: webtop-ui
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 32110
+    - name: webtop-ui-alt
+      protocol: TCP
+      port: 3001
+      targetPort: 3001
+      nodePort: 32111
+  type: NodePort  
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: webtop-config-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/webtop-config 
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: webtop-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "" 
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: 
+  name: webtop-access-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: webtop 
+  policyTypes:
+  - Ingress 
+  ingress:
+  - from:
+    - podSelector: {}
+  - ports:
+      - protocol: TCP
+        port: 32110
+      - protocol: TCP 
+        port: 32111
+
