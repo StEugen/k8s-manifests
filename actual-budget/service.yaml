@@ -1,0 +1,15 @@
+# actual-server-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: actual-server-service
+spec:
+  selector:
+    app: actual-server
+  type: NodePort 
+  ports:
+    - protocol: TCP
+      port: 5006
+      targetPort: 5006
+      nodePort: 30006 
+

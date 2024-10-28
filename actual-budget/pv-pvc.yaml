@@ -1,0 +1,24 @@
+# actual-server-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: actual-server-pv
+spec:
+  capacity:
+    storage: 5Gi 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/actual-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: actual-server-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+

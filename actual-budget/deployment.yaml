@@ -1,0 +1,42 @@
+# actual-server-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: actual-server
+  template:
+    metadata:
+      labels:
+        app: actual-server
+    spec:
+      containers:
+        - name: actual-server
+          image: docker.io/actualbudget/actual-server:latest
+          ports:
+            - containerPort: 5006
+          volumeMounts:
+            - mountPath: /data
+              name: actual-data
+          env:
+            # - name: ACTUAL_HTTPS_KEY
+            #   value: "/data/selfhost.key"
+            # - name: ACTUAL_HTTPS_CERT
+            #   value: "/data/selfhost.crt"
+            # - name: ACTUAL_PORT
+            #   value: "5006"
+            # - name: ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB
+            #   value: "20"
+            # - name: ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB
+            #   value: "50"
+            # - name: ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB
+            #   value: "20"
+      volumes:
+        - name: actual-data
+          persistentVolumeClaim:
+            claimName: actual-server-pvc
+      restartPolicy: Always
+
