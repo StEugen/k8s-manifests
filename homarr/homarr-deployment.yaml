@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: homarr
+  name: homarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: homarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: homarr
+    spec:
+      containers:
+        - image: ghcr.io/ajnart/homarr:latest
+          name: homarr
+          ports:
+            - containerPort: 7575
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: homarr-claim0
+            - mountPath: /app/data/configs
+              name: homarr-claim1
+            - mountPath: /app/public/icons
+              name: homarr-claim2
+            - mountPath: /data
+              name: homarr-claim3
+      restartPolicy: Always
+      volumes:
+        - name: homarr-claim0
+          persistentVolumeClaim:
+            claimName: homarr-claim0
+        - name: homarr-claim1
+          persistentVolumeClaim:
+            claimName: homarr-claim1
+        - name: homarr-claim2
+          persistentVolumeClaim:
+            claimName: homarr-claim2
+        - name: homarr-claim3
+          persistentVolumeClaim:
+            claimName: homarr-claim3
+status: {}
