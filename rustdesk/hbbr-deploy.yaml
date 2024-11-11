@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hbbr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hbbr
+  template:
+    metadata:
+      labels:
+        app: hbbr
+    spec:
+      containers:
+        - name: hbbr
+          image: rustdesk/rustdesk-server:latest
+          command: ["hbbr"]
+          volumeMounts:
+            - mountPath: /root
+              name: data-volume
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: rustdesk-data-pvc
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hbbr-service
+spec:
+  selector:
+    app: hbbr
+  ports:
+    - protocol: TCP
+      port: 21117  # Relay port
+      targetPort: 21117
+      nodePort: 32119  
+  type: NodePort
+

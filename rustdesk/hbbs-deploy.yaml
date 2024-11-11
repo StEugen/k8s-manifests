@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hbbs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hbbs
+  template:
+    metadata:
+      labels:
+        app: hbbs
+    spec:
+      containers:
+        - name: hbbs
+          image: rustdesk/rustdesk-server:latest
+          command: ["hbbs"]
+          volumeMounts:
+            - mountPath: /root
+              name: data-volume
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: rustdesk-data-pvc
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hbbs-service
+spec:
+  selector:
+    app: hbbs
+  ports:
+    # Use hostnetwork, with nodePort rustdesk not working/working buggy 
+    - name: nattest
+      protocol: TCP
+      port: 21115  # NAT type test
+      targetPort: 21115
+      nodePort: 32115  
+    - name: tcppunch
+      protocol: TCP
+      port: 21116  # TCP hole punching
+      targetPort: 21116
+      nodePort: 32116  
+    - name: udp 
+      protocol: UDP
+      port: 21116  # Heartbeat/ID server
+      targetPort: 21116
+      nodePort: 32117  
+    - name: relay 
+      protocol: TCP
+      port: 21117  # Relay
+      targetPort: 21117
+      nodePort: 32118  
+  type: NodePort
+

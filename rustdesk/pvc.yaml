@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rustdesk-data-pv
+spec:
+  capacity:
+    storage: 1Gi  
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/rustdesk 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rustdesk-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi 
+
