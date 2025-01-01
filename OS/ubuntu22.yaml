@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
   - name: ubuntu-container
-    image: pgnomme/ubuntu-to-go:2
+    image: pgnomme/ubuntu-to-go:22.04
     command: [ "bash", "-c", "while true; do sleep 3600; done" ]
     tty: true
     stdin: true
