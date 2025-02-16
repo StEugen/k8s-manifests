@@ -1,0 +1,15 @@
+# that is basically kali linux with openvas installed
+apiVersion: v1
+kind: Service
+metadata:
+  name: kali-service
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: kali
+  ports:
+    - protocol: TCP
+      port: 9392
+      targetPort: 9392
+      nodePort: 31443

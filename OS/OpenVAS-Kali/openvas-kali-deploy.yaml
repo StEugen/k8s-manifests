@@ -1,0 +1,24 @@
+# that is basically kali linux with openvas installed
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kali-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kali
+  template:
+    metadata:
+      labels:
+        app: kali
+    spec:
+      containers:
+        - name: kali-to-go
+          image: pgnomme/kali-to-go:openvas
+          command: ["bash", "-c", "while true; do sleep 3600; done"]
+          tty: true
+          stdin: true
+          ports:
+            - containerPort: 9392
