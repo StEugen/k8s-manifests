@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atomic-server
+  namespace: atomic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atomic-server
+  template:
+    metadata:
+      labels:
+        app: atomic-server
+    spec:
+      containers:
+        - name: atomic-server
+          env:
+            - name: ATOMIC_DOMAIN
+              value: "" # your atomic domain here
+            - name: ATOMIC_HTTPS
+              value: "false" # change to true if you need integrated https
+            - name: ATOMIC_PORT
+              value: "80"
+            - name: ATOMIC_SERVER_URL
+              value: "" #server url
+          image: joepmeneer/atomic-server:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: storage
+              mountPath: /atomic-storage
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: atomic-storage

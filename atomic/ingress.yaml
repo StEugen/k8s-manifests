@@ -1,0 +1,23 @@
+# if you have ingress use this as template
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: atomic-ingress
+  namespace: atomic
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: # domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: atomic-server
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        -  # domain
+      secretName: #tls secret name
