@@ -18,7 +18,7 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        - mountPath: "/data/"
+        - mountPath: /data/
           name: filegator-storage
       volumes:
       - name: filegator-storage
