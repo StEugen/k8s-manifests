@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filegator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filegator
+  template:
+    metadata:
+      labels:
+        app: filegator
+    spec:
+      containers:
+      - name: filegator
+        image: filegator/filegator
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: "/data/"
+          name: filegator-storage
+      volumes:
+      - name: filegator-storage
+        persistentVolumeClaim:
+          claimName: filegator-pvc

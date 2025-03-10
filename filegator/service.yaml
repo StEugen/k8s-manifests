@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: filegator-service
+spec:
+  selector:
+    app: filegator
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 31321
+  type: NodePort
