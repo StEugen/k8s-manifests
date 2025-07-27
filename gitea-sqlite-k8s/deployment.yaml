@@ -14,7 +14,10 @@ spec:
         app: gitea
     spec:
       containers:
-        - name: gitea
+        - env:
+            - name: DISABLE_REGISTRATION
+              value: "true"
+          name: gitea
           image: gitea/gitea:latest
           ports:
             - containerPort: 3000
