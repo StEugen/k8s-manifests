@@ -23,21 +23,17 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-            - name: FB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: filebrowser-auth
-                  key: admin-user
-            - name: FB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: filebrowser-auth
-                  key: admin-password
           volumeMounts:
             - name: data
               mountPath: /srv
+            - name: db
+              mountPath: /database
       volumes:
         - name: data
           hostPath:
-            path: /data
-            type: Directory
+            path: /data/filebrowser
+            type: DirectoryOrCreate
+        - name: db
+          hostPath:
+            path: /data/filebrowserdb
+            type: DirectoryOrCreate
